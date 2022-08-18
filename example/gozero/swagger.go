@@ -5,7 +5,7 @@ import (
 	"html/template"
 	"net/http"
 
-	"github.com/zeromicro/go-zero/rest/httpx"
+	"github.com/graydance/go-kit/rest/httpx"
 )
 
 type Opts func(*swaggerConfig)

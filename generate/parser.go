@@ -10,8 +10,8 @@ import (
 	"strings"
 	"unsafe"
 
-	"github.com/zeromicro/go-zero/tools/goctl/api/spec"
-	"github.com/zeromicro/go-zero/tools/goctl/plugin"
+	"github.com/graydance/go-kit/tools/goctl/api/spec"
+	"github.com/graydance/go-kit/tools/goctl/plugin"
 )
 
 var strColon = []byte(":")

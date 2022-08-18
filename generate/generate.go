@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	"github.com/zeromicro/go-zero/tools/goctl/plugin"
+	"github.com/graydance/go-kit/tools/goctl/plugin"
 )
 
 func Do(filename string, host string, basePath string, in *plugin.Plugin) error {

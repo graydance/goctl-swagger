@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/zeromicro/go-zero/core/conf"
-	"github.com/zeromicro/go-zero/rest"
-	"github.com/zeromicro/go-zero/rest/httpx"
+	"github.com/graydance/go-kit/core/conf"
+	"github.com/graydance/go-kit/rest"
+	"github.com/graydance/go-kit/rest/httpx"
 	"io/ioutil"
 	"log"
 	"net/http"
