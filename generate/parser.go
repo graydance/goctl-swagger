@@ -27,6 +27,12 @@ const (
 	equalToken      = "="
 )
 
+type resp struct {
+	code int         `json:"code"`
+	msg  int         `json:"msg"`
+	data interface{} `json:"data"`
+}
+
 func parseRangeOption(option string) (float64, float64, bool) {
 	const str = "\\[([+-]?\\d+(\\.\\d+)?):([+-]?\\d+(\\.\\d+)?)\\]"
 	result := regexp.MustCompile(str).FindStringSubmatch(option)
@@ -87,7 +93,7 @@ func applyGenerate(p *plugin.Plugin, host string, basePath string) (*swaggerObje
 	//s.Security = append(s.Security, swaggerSecurityRequirementObject{"apiKey": []string{}})
 
 	requestResponseRefs := refMap{}
-	renderServiceRoutes(p.Api.Service, p.Api.Service.Groups, s.Paths, requestResponseRefs)
+	renderServiceRoutes(p.Api.Service, p.Api.Service.Groups, s.Paths, requestResponseRefs, s.Definitions)
 	m := messageMap{}
 
 	renderReplyAsDefinition(s.Definitions, m, p.Api.Types, requestResponseRefs)
@@ -95,7 +101,7 @@ func applyGenerate(p *plugin.Plugin, host string, basePath string) (*swaggerObje
 	return &s, nil
 }
 
-func renderServiceRoutes(service spec.Service, groups []spec.Group, paths swaggerPathsObject, requestResponseRefs refMap) {
+func renderServiceRoutes(service spec.Service, groups []spec.Group, paths swaggerPathsObject, requestResponseRefs refMap, d swaggerDefinitionsObject) {
 	for _, group := range groups {
 		for _, route := range group.Routes {
 
@@ -249,7 +255,39 @@ func renderServiceRoutes(service spec.Service, groups []spec.Group, paths swagge
 			desc := "A successful response."
 			respRef := ""
 			if route.ResponseType != nil && len(route.ResponseType.Name()) > 0 {
-				respRef = fmt.Sprintf("#/definitions/%s", route.ResponseType.Name())
+				respRef = fmt.Sprintf("#/definitions/%s%s", route.ResponseType.Name(), "Data")
+
+				// TODO
+				// 在此创建一个DataCode结构，其中Data的Ref=fmt.Sprintf("#/definitions/%s%s", route.ResponseType.Name())
+				dataProperties := swaggerSchemaObjectProperties{
+					{
+						Key: "code",
+						Value: map[string]string{
+							"type":   "integer",
+							"format": "int32",
+						},
+					},
+					{
+						Key: "msg",
+						Value: map[string]string{
+							"type": "string",
+						},
+					},
+					{
+						Key: "data",
+						Value: map[string]string{
+							"$ref": fmt.Sprintf("#/definitions/%s", route.ResponseType.Name()),
+						},
+					},
+				}
+
+				dKey := fmt.Sprintf("%s%s", route.ResponseType.Name(), "Data")
+				d[dKey] = swaggerSchemaObject{
+					schemaCore: schemaCore{
+						Type: "object",
+					},
+					Properties: &dataProperties,
+				}
 			}
 			tags := service.Name
 			if value := group.GetAnnotation("group"); len(value) > 0 {
