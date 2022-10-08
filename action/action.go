@@ -3,7 +3,7 @@ package action
 import (
 	"github.com/graydance/go-kit/tools/goctl/plugin"
 	"github.com/urfave/cli/v2"
-	"github.com/zeromicro/goctl-swagger/generate"
+	"github.com/graydance/goctl-swagger/generate"
 )
 
 func Generator(ctx *cli.Context) error {
